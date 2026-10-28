@@ -29,3 +29,20 @@ describe('camera manager follow mode', () => {
     expect(camera.position.distanceTo(pos)).toBeLessThan(9); // ~7 m follow distance
   });
 });
+
+describe('mouse look sensitivity', () => {
+  it('a 100 px drag turns the view about 15 degrees', () => {
+    const dom = target();
+    const rider = { getPosition: () => new THREE.Vector3(), getForward: () => new THREE.Vector3(1, 0, 0) };
+    const camera = new THREE.PerspectiveCamera();
+    camera.position.set(0, 10, 30);
+    const cams = createCameraManager({ heightAt: () => 0, renderer: { domElement: dom } }, camera, rider, { touch: false });
+    cams.update(0.016);
+    const before = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ').y;
+    dom.fire('pointerdown', { button: 0, clientX: 0, clientY: 0 });
+    dom.fire('pointermove', { buttons: 1, clientX: 100, clientY: 0 });
+    cams.update(0.016);
+    const after = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ').y;
+    expect(THREE.MathUtils.radToDeg(Math.abs(after - before))).toBeCloseTo(15, 0);
+  });
+});

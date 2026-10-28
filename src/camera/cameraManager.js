@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { stepFly, clampCamera, createInputState, MAX_PITCH } from './flyControls.js';
+import { stepFly, clampCamera, createInputState, MAX_PITCH, LOOK_SPEED } from './flyControls.js';
 import { createFollowCam } from './followCam.js';
 import { createDragTracker } from './drag.js';
 
@@ -40,8 +40,8 @@ export function createCameraManager(ctx, camera, rider, { touch = false, dom = c
     createDragTracker(dom, window, (dx, dy) => {
       if (mode === 'follow') follow.drag(dx, dy);
       else {
-        fly.yaw -= dx * 0.004;
-        fly.pitch = THREE.MathUtils.clamp(fly.pitch - dy * 0.004, -MAX_PITCH, MAX_PITCH);
+        fly.yaw -= dx * LOOK_SPEED;
+        fly.pitch = THREE.MathUtils.clamp(fly.pitch - dy * LOOK_SPEED, -MAX_PITCH, MAX_PITCH);
       }
     });
     dom.addEventListener('wheel', (e) => {

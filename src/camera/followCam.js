@@ -26,8 +26,8 @@ export function createFollowCam(rider) {
     orbit,
     desiredPose,
     drag(dx, dy) {
-      orbit.yaw -= dx * 0.005;
-      orbit.elevation = THREE.MathUtils.clamp(orbit.elevation + dy * 0.004, THREE.MathUtils.degToRad(4), THREE.MathUtils.degToRad(75));
+      orbit.yaw -= dx * 0.0033;
+      orbit.elevation = THREE.MathUtils.clamp(orbit.elevation + dy * 0.0026, THREE.MathUtils.degToRad(4), THREE.MathUtils.degToRad(75));
     },
     zoom(delta) {
       orbit.distance = THREE.MathUtils.clamp(orbit.distance * Math.exp(delta * 0.001), 3, 40);

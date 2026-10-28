@@ -7,6 +7,7 @@ export const BOOST = 3;
 export const MIN_CLEARANCE = 1.5;
 export const CEILING = 150;
 export const MAX_PITCH = THREE.MathUtils.degToRad(85);
+export const LOOK_SPEED = THREE.MathUtils.degToRad(0.15); // radians per pixel of mouse drag
 const MAX_DT = 0.1;
 
 const _f = new THREE.Vector3();
@@ -41,13 +42,16 @@ const KEYS = {
   KeyS: ['forward', -1], ArrowDown: ['forward', -1],
   KeyD: ['right', 1], ArrowRight: ['right', 1],
   KeyA: ['right', -1], ArrowLeft: ['right', -1],
-  KeyE: ['up', 1], KeyQ: ['up', -1],
+  KeyE: ['up', 1], Space: ['up', 1], KeyQ: ['up', -1],
 };
 
 // Keyboard state; all keys release on window blur so nothing drifts.
 export function createInputState(target = window) {
   const down = new Set();
-  target.addEventListener('keydown', (e) => down.add(e.code));
+  target.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') e.preventDefault?.(); // no page scroll or button press
+    down.add(e.code);
+  });
   target.addEventListener('keyup', (e) => down.delete(e.code));
   target.addEventListener('blur', () => down.clear());
   return {

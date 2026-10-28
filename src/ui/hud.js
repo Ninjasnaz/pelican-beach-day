@@ -8,7 +8,7 @@ export function createHud(root, { touch, onToggleFollow }) {
       <ul class="hud-keys">
         <li><kbd>W</kbd><kbd>S</kbd> fly forward / back</li>
         <li><kbd>A</kbd><kbd>D</kbd> slide left / right</li>
-        <li><kbd>E</kbd><kbd>Q</kbd> up / down</li>
+        <li><kbd>E</kbd><kbd>Space</kbd> up &middot; <kbd>Q</kbd> down</li>
         <li><kbd>Shift</kbd> go faster</li>
         <li><span class="hud-ico">drag</span> look around</li>
         <li><span class="hud-ico">scroll</span> zoom</li>
@@ -22,7 +22,8 @@ export function createHud(root, { touch, onToggleFollow }) {
   const card = root.querySelector('.hud-card');
   const toggle = root.querySelector('.hud-card-toggle');
   const follow = root.querySelector('.hud-follow');
-  toggle.addEventListener('click', () => {
+  toggle.addEventListener('click', (e) => {
+    e.currentTarget.blur();
     const open = card.dataset.open !== 'true';
     card.dataset.open = String(open);
     toggle.setAttribute('aria-expanded', String(open));

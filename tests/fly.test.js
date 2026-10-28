@@ -79,3 +79,13 @@ describe('createInputState', () => {
     expect(inp.read().forward).toBe(0);
   });
 });
+
+describe('spacebar', () => {
+  it('rises like E', () => {
+    const l = {};
+    const t = { addEventListener: (ty, fn) => { (l[ty] ||= []).push(fn); } };
+    const inp = createInputState(t);
+    l.keydown.forEach((fn) => fn({ code: 'Space', preventDefault() {} }));
+    expect(inp.read().up).toBe(1);
+  });
+});

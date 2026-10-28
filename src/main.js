@@ -9,7 +9,7 @@ import { createLights } from './world/lights.js';
 import { createOcean } from './world/ocean.js';
 import { createPark } from './world/park.js';
 import { createBoardwalk } from './track/boardwalk.js';
-import { createRider } from './pelican/rider.js';
+import { createRider, nearestU } from './pelican/rider.js';
 import { createBuildings } from './buildings/index.js';
 import { createVendors } from './vendors/index.js';
 import { createProps } from './props/index.js';
@@ -56,7 +56,8 @@ const vendors = createVendors(ctx);
 createProps(ctx);
 createCrowd(ctx, 60, { queueSpots: vendors.queueSpots });
 createPark(ctx);
-const rider = createRider(ctx);
+// Start the pelican on the stretch of track closest to the opening view.
+const rider = createRider(ctx, { startU: nearestU(track, camera.position.x, camera.position.z) });
 
 const resize = () => syncViewport(renderer, camera, canvas, window.devicePixelRatio);
 resize();

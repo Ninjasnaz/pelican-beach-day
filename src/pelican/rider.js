@@ -14,7 +14,18 @@ export function advance(u, dt, length, speed = RIDER_SPEED) {
   return (u + step) % 1;
 }
 
-export function createRider(ctx) {
+// Pure: track position (arc-length fraction) closest to a ground point.
+export function nearestU(track, x, z, samples = 2000) {
+  let best = 0, bestD = Infinity;
+  for (let i = 0; i < samples; i++) {
+    const p = track.pointAt(i / samples);
+    const d = (p.x - x) ** 2 + (p.z - z) ** 2;
+    if (d < bestD) { bestD = d; best = i / samples; }
+  }
+  return best;
+}
+
+export function createRider(ctx, { startU = 0 } = {}) {
   const { track } = ctx;
   const group = new THREE.Group();
   group.name = 'rider';
@@ -27,11 +38,11 @@ export function createRider(ctx) {
   const bend = new THREE.Vector3(0, 0.35, 1).normalize();
   const pL = new THREE.Vector3(), pR = new THREE.Vector3();
   const look = new THREE.Vector3();
-  const prevTangent = track.tangentAt(0);
+  const prevTangent = track.tangentAt(startU);
 
   const state = {
     group,
-    u: 0.0,
+    u: startU,
     speed: RIDER_SPEED,
     crank: 0,
     wheel: 0,

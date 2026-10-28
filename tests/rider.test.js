@@ -21,3 +21,17 @@ describe('rider motion', () => {
     expect(u).toBeLessThan(1);
   });
 });
+
+import { nearestU } from '../src/pelican/rider.js';
+describe('rider start position', () => {
+  it('finds the track point closest to the opening camera', () => {
+    const u = nearestU(track, 0, 78);
+    const p = track.pointAt(u);
+    expect(p.z).toBeGreaterThan(25); // park side, in front of the viewer
+    expect(Math.abs(p.x)).toBeLessThan(15);
+    for (let i = 0; i < 200; i++) {
+      const q = track.pointAt(i / 200);
+      expect(Math.hypot(p.x, p.z - 78)).toBeLessThanOrEqual(Math.hypot(q.x, q.z - 78) + 0.05);
+    }
+  });
+});

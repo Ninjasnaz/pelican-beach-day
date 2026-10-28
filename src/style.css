@@ -1,0 +1,9 @@
+:root {
+  --ink: #23324a;
+  --card: rgba(255, 250, 240, 0.88);
+  --accent: #e8574a;
+  --teal: #2a9d8f;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #f6c89a; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+#scene { display: block; width: 100vw; height: 100vh; touch-action: none; }

@@ -9,6 +9,9 @@ import { createOcean } from './world/ocean.js';
 import { createPark } from './world/park.js';
 import { createBoardwalk } from './track/boardwalk.js';
 import { createRider } from './pelican/rider.js';
+import { isTouchPrimary } from './camera/device.js';
+import { createCameraManager } from './camera/cameraManager.js';
+import { createHud } from './ui/hud.js';
 
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -54,7 +57,20 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 
+const touch = isTouchPrimary();
 const debug = { ready: false, renderer, mode: 'free', rider, camera, ctx };
+let hud;
+const cameras = createCameraManager(ctx, camera, rider, {
+  touch,
+  onMode: (mode) => { debug.mode = mode; hud?.setMode(mode); },
+});
+hud = createHud(document.getElementById('hud'), {
+  touch,
+  onToggleFollow: () => cameras.setMode(cameras.mode === 'follow' ? 'free' : 'follow'),
+});
+hud.setMode(cameras.mode);
+debug.setMode = cameras.setMode;
+ctx.addUpdater((dt) => cameras.update(dt));
 
 // Debug hook for the smoke test: park the camera beside the pelican.
 let closeUpOn = false;

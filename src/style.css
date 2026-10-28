@@ -7,3 +7,38 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; overflow: hidden; background: #f6c89a; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
 #scene { display: block; width: 100vw; height: 100vh; touch-action: none; }
+
+#hud { position: fixed; inset: 0; pointer-events: none; }
+.hud-title {
+  position: absolute; top: 16px; left: 16px;
+  font-weight: 800; font-size: clamp(18px, 3.2vw, 28px); letter-spacing: 0.01em;
+  color: #fff; text-shadow: 0 2px 0 rgba(35, 50, 74, 0.35), 0 0 18px rgba(232, 87, 74, 0.35);
+}
+.hud-tag {
+  position: absolute; top: 56px; left: 16px; padding: 4px 10px; border-radius: 999px;
+  background: var(--card); font-size: 13px; font-weight: 600;
+}
+.hud-card {
+  position: absolute; left: 16px; bottom: 16px; max-width: calc(100vw - 32px);
+  background: var(--card); border-radius: 14px; padding: 8px 14px 10px;
+  box-shadow: 0 6px 20px rgba(35, 50, 74, 0.18); pointer-events: auto; font-size: 13px;
+}
+.hud-card-toggle {
+  all: unset; cursor: pointer; font-weight: 700; font-size: 13px; display: block; padding: 2px 0;
+}
+.hud-card-toggle::after { content: " \25BE"; }
+.hud-card[data-open="false"] .hud-card-toggle::after { content: " \25B8"; }
+.hud-card[data-open="false"] .hud-keys { display: none; }
+.hud-keys { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 4px; }
+kbd, .hud-ico {
+  display: inline-block; min-width: 20px; padding: 1px 6px; margin-right: 4px; border-radius: 6px;
+  background: #fff; border: 1px solid rgba(35, 50, 74, 0.2); font: 600 12px/1.4 ui-monospace, monospace; text-align: center;
+}
+.hud-follow {
+  position: absolute; right: 16px; bottom: 16px; pointer-events: auto; cursor: pointer;
+  border: 0; border-radius: 999px; padding: 10px 18px; font: 700 14px system-ui, sans-serif;
+  background: var(--accent); color: #fff; box-shadow: 0 6px 18px rgba(232, 87, 74, 0.35);
+}
+.hud-follow.active { background: var(--teal); box-shadow: 0 6px 18px rgba(42, 157, 143, 0.35); }
+.hud-follow:focus-visible, .hud-card-toggle:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+@media (max-width: 560px) { .hud-card { font-size: 12px; } }

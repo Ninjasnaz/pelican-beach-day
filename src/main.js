@@ -9,6 +9,10 @@ import { createOcean } from './world/ocean.js';
 import { createPark } from './world/park.js';
 import { createBoardwalk } from './track/boardwalk.js';
 import { createRider } from './pelican/rider.js';
+import { createBuildings } from './buildings/index.js';
+import { createVendors } from './vendors/index.js';
+import { createProps } from './props/index.js';
+import { createCrowd } from './people/crowd.js';
 import { isTouchPrimary } from './camera/device.js';
 import { createCameraManager } from './camera/cameraManager.js';
 import { createHud } from './ui/hud.js';
@@ -46,6 +50,12 @@ createSky(ctx);
 createTerrain(ctx);
 createOcean(ctx);
 createBoardwalk(ctx);
+// Big footprints claim their spots first; the park fills in around everything.
+ctx.reserve(0, 75, 6); // opening camera spot
+createBuildings(ctx);
+const vendors = createVendors(ctx);
+createProps(ctx);
+createCrowd(ctx, 60, { queueSpots: vendors.queueSpots });
 createPark(ctx);
 const rider = createRider(ctx);
 

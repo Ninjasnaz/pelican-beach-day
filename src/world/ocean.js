@@ -3,12 +3,18 @@ import { palette } from '../util/palette.js';
 import { toon, mesh } from '../util/materials.js';
 import { WATER_LEVEL } from './terrain.js';
 
+export const SHORE_START = -48;
+// Peak wave height; stays above the seabed (-0.45) so no sand shows through troughs.
+export const WAVE_AMPLITUDE = 0.3;
+
 // Water plane with gentle vertex waves (flat shading gives the faceted look),
-// a foam line along the shore, and sailboats drifting out past the beach.
+// and sailboats drifting out past the beach.
 export function createOcean(ctx) {
   const geo = new THREE.PlaneGeometry(1400, 700, 140, 70);
   geo.rotateX(-Math.PI / 2);
-  geo.translate(0, WATER_LEVEL, -60 - 300);
+  // Starts at the shoreline (ground dips below water around z = -48) so waves
+  // never poke up through the sand.
+  geo.translate(0, WATER_LEVEL, SHORE_START - 350);
   const mat = new THREE.MeshPhongMaterial({ color: palette.ocean, flatShading: true, shininess: 70, specular: 0x557788 });
   const time = { value: 0 };
   mat.onBeforeCompile = (shader) => {
@@ -18,9 +24,9 @@ export function createOcean(ctx) {
       .replace(
         '#include <begin_vertex>',
         `#include <begin_vertex>
-        float w = sin(position.x * 0.08 + uTime * 0.9) * 0.18
-                + sin(position.z * 0.11 - uTime * 1.3) * 0.14
-                + sin((position.x + position.z) * 0.035 + uTime * 0.5) * 0.22;
+        float w = (sin(position.x * 0.08 + uTime * 0.9) * 0.33
+                + sin(position.z * 0.11 - uTime * 1.3) * 0.27
+                + sin((position.x + position.z) * 0.035 + uTime * 0.5) * 0.40) * ${WAVE_AMPLITUDE.toFixed(3)};
         transformed.y += w;`,
       );
   };
@@ -28,13 +34,6 @@ export function createOcean(ctx) {
   water.receiveShadow = true;
   water.name = 'ocean';
   ctx.scene.add(water);
-
-  // Foam strip hugging the shoreline.
-  const foamMat = new THREE.MeshBasicMaterial({ color: palette.foam, transparent: true, opacity: 0.75 });
-  const foam = new THREE.Mesh(new THREE.PlaneGeometry(1400, 2.2, 1, 1), foamMat);
-  foam.rotation.x = -Math.PI / 2;
-  foam.position.set(0, WATER_LEVEL + 0.12, -50);
-  ctx.scene.add(foam);
 
   const boats = [makeSailboat(), makeSailboat(palette.bandanaRed)];
   boats[0].position.set(-60, WATER_LEVEL, -190);
@@ -44,8 +43,6 @@ export function createOcean(ctx) {
 
   ctx.addUpdater((dt, t) => {
     time.value = t;
-    foam.position.z = -50 + Math.sin(t * 0.6) * 0.8;
-    foamMat.opacity = 0.55 + 0.25 * Math.sin(t * 0.6 + 1);
     boats.forEach((b, i) => {
       b.position.x += dt * (i ? -0.8 : 1.1);
       if (b.position.x > 260) b.position.x = -260;

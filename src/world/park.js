@@ -23,7 +23,6 @@ function scatter(ctx, count, { xMin, xMax, zMin, zMax, radius, tries = 20 }) {
 export function createPark(ctx) {
   const group = new THREE.Group();
   group.name = 'park';
-  ctx.reserve(0, 75, 6); // opening camera spot
 
   const trunkMat = toon(palette.trunk);
   const leaf = toon(palette.leaf, { flatShading: true });

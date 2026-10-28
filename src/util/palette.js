@@ -17,7 +17,7 @@ export const palette = {
   fishBlue: 0x4aa3df,
   headphone: 0x2d2d2d,
   lightBeam: 0xfff4c2,
-  skyTop: 0x8ecae6,
+  skyTop: 0x6db6e6,
   skyHorizon: 0xffd6a5,
   sun: 0xfff3c4,
   ocean: 0x3fa7c9,

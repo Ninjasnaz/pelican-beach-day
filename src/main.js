@@ -1,6 +1,13 @@
 import * as THREE from 'three';
 import { mulberry32, SEED } from './util/rng.js';
-import { palette } from './util/palette.js';
+import { createTrack } from './track/trackPath.js';
+import { createLayout } from './util/layout.js';
+import { heightAt, createTerrain } from './world/terrain.js';
+import { createSky } from './world/sky.js';
+import { createLights } from './world/lights.js';
+import { createOcean } from './world/ocean.js';
+import { createPark } from './world/park.js';
+import { createBoardwalk } from './track/boardwalk.js';
 
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -12,23 +19,30 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1500);
-camera.position.set(0, 1.7, 75);
-camera.lookAt(0, 2, -20);
+camera.position.set(0, heightAt(0, 78) + 7, 78);
+camera.lookAt(0, 0, -30);
 
 const updaters = [];
+const track = createTrack();
+const layout = createLayout(track);
 const ctx = {
   scene,
   camera,
   renderer,
   rng: mulberry32(SEED),
+  heightAt,
+  zone: layout.zone,
+  track,
+  reserve: layout.reserve,
   addUpdater: (fn) => updaters.push(fn),
 };
 
-// Placeholder ground until the world module lands.
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshLambertMaterial({ color: palette.sand }));
-ground.rotation.x = -Math.PI / 2;
-scene.add(ground);
-scene.add(new THREE.HemisphereLight(0xffffff, 0x888866, 2));
+createLights(ctx);
+createSky(ctx);
+createTerrain(ctx);
+createOcean(ctx);
+createBoardwalk(ctx);
+createPark(ctx);
 
 function resize() {
   const w = window.innerWidth, h = window.innerHeight;

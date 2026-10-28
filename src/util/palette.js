@@ -36,4 +36,18 @@ export const palette = {
   post: 0x7a4a2c,
   white: 0xffffff,
   sail: 0xfdfdfd,
+  // Vendors and beach props.
+  cartRed: 0xe63946,
+  cartYellow: 0xffc93c,
+  cartTeal: 0x2ec4b6,
+  cartBlue: 0x3a86ff,
+  cartPink: 0xff8fb8,
+  cartOrange: 0xff8c42,
+  cartPurple: 0x9b5de5,
+  cartGreen: 0x57cc62,
+  cream: 0xfff1d6,
+  lemon: 0xffe14d,
+  taco: 0xf4b942,
+  lifeguardRed: 0xe63946,
+  lifeguardYellow: 0xffd23f,
 };

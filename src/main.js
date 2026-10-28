@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { mulberry32, SEED } from './util/rng.js';
+import { syncViewport } from './util/viewport.js';
 import { createTrack } from './track/trackPath.js';
 import { createLayout } from './util/layout.js';
 import { heightAt, createTerrain } from './world/terrain.js';
@@ -19,8 +20,6 @@ import { createHud } from './ui/hud.js';
 
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -59,13 +58,10 @@ createCrowd(ctx, 60, { queueSpots: vendors.queueSpots });
 createPark(ctx);
 const rider = createRider(ctx);
 
-function resize() {
-  const w = window.innerWidth, h = window.innerHeight;
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-}
+const resize = () => syncViewport(renderer, camera, canvas, window.devicePixelRatio);
+resize();
 window.addEventListener('resize', resize);
+if ('ResizeObserver' in window) new ResizeObserver(resize).observe(canvas);
 
 const touch = isTouchPrimary();
 const debug = { ready: false, renderer, mode: 'free', rider, camera, ctx };

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { stepFly, clampCamera, createInputState, MAX_PITCH } from './flyControls.js';
 import { createFollowCam } from './followCam.js';
+import { createDragTracker } from './drag.js';
 
 const EASE_TIME = 0.8;
 const ease = (t) => t * t * (3 - 2 * t);
@@ -25,6 +26,7 @@ export function createCameraManager(ctx, camera, rider, { touch = false, dom = c
     if (next === mode) return;
     mode = next;
     if (mode === 'follow') {
+      followInit = false; // start from where he is now, not where we left him
       transition = instant ? null : { t: 0, fromPos: camera.position.clone(), fromQuat: camera.quaternion.clone() };
     } else {
       transition = null;
@@ -34,15 +36,8 @@ export function createCameraManager(ctx, camera, rider, { touch = false, dom = c
   }
 
   // Mouse drag looks around (free) or orbits the pelican (follow).
-  let dragging = null;
   if (!touch) {
-    dom.addEventListener('pointerdown', (e) => { dragging = { x: e.clientX, y: e.clientY }; dom.setPointerCapture?.(e.pointerId); });
-    dom.addEventListener('pointerup', () => { dragging = null; });
-    dom.addEventListener('pointercancel', () => { dragging = null; });
-    dom.addEventListener('pointermove', (e) => {
-      if (!dragging) return;
-      const dx = e.clientX - dragging.x, dy = e.clientY - dragging.y;
-      dragging = { x: e.clientX, y: e.clientY };
+    createDragTracker(dom, window, (dx, dy) => {
       if (mode === 'follow') follow.drag(dx, dy);
       else {
         fly.yaw -= dx * 0.004;

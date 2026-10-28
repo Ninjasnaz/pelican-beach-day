@@ -8,6 +8,7 @@ import { createLights } from './world/lights.js';
 import { createOcean } from './world/ocean.js';
 import { createPark } from './world/park.js';
 import { createBoardwalk } from './track/boardwalk.js';
+import { createRider } from './pelican/rider.js';
 
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -43,6 +44,7 @@ createTerrain(ctx);
 createOcean(ctx);
 createBoardwalk(ctx);
 createPark(ctx);
+const rider = createRider(ctx);
 
 function resize() {
   const w = window.innerWidth, h = window.innerHeight;
@@ -52,7 +54,19 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 
-const debug = { ready: false, renderer, mode: 'free', rider: null, camera, ctx };
+const debug = { ready: false, renderer, mode: 'free', rider, camera, ctx };
+
+// Debug hook for the smoke test: park the camera beside the pelican.
+let closeUpOn = false;
+debug.closeUp = (on = true) => { closeUpOn = on; };
+ctx.addUpdater(() => {
+  if (!closeUpOn) return;
+  const p = rider.getPosition();
+  const f = rider.getForward();
+  const side = new THREE.Vector3(-f.z, 0, f.x).normalize();
+  camera.position.copy(p).addScaledVector(side, 3.2).addScaledVector(f, 0.6).add(new THREE.Vector3(0, 1.4, 0));
+  camera.lookAt(p.x, p.y + 1.1, p.z);
+});
 window.__pelican = debug;
 
 const clock = new THREE.Clock();

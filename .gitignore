@@ -3,3 +3,4 @@ dist/
 e2e/out/
 .superpowers/
 .vercel/
+.claude/worktrees/

@@ -2,6 +2,7 @@
 export const palette = {
   pelicanWhite: 0xf7f7f2,
   pelicanShade: 0xd9dde3,
+  featherGray: 0x7d8590,
   beak: 0xf4a259,
   pouch: 0xf27b6b,
   pouchDark: 0xd95f50,
